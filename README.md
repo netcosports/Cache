@@ -8,7 +8,6 @@ the [Ktor Client](https://ktor.io/docs/client-create-new-application.html#create
 - [OkHttp Engine](https://ktor.io/docs/client-engines.html#okhttp)
   and [OkHttp Caching feature](https://square.github.io/okhttp/features/caching/)
   on [Android](ktor/cache/data/src/androidMain/kotlin/com/netcosports/ktor/cache/data/KtorHttpClientUtils.kt)
-  on [Android](ktor/cache/data/src/androidMain/kotlin/com/netcosports/ktor/cache/data/KtorHttpClientUtils.kt)
 - [Darwin Engine](https://ktor.io/docs/client-engines.html#darwin)
   and [NSURLRequest.CachePolicy feature](https://developer.apple.com/documentation/foundation/nsurlrequest/cachepolicy)
   on [iOS](ktor/cache/data/src/iosMain/kotlin/com/netcosports/ktor/cache/data/KtorHttpClientUtils.kt)
@@ -21,13 +20,15 @@ instead of responses.
 
 In **Android-only projects**, we use the [OkHttp Client](https://square.github.io/okhttp/)
 and [OkHttp Caching feature](https://square.github.io/okhttp/features/caching/).\
-We generate a `RetrofitServiceWrapper` for
+You
+can [create](sample/src/main/java/com/netcosports/cachesample/data/SampleRetrofitServiceManuallyWrapped.kt)
+or generate a `RetrofitServiceWrapper` for
 the [Retrofit Service](https://square.github.io/retrofit/) to
 create [CoroutineLoader](cache/core-ktx/src/commonMain/kotlin/com/netcosports/cache/core/CoroutineLoader.kt)
-or [RxLoader](cache/core-rx/src/jvmMain/kotlin/com/netcosports/cache/core/RxLoader.kt)
+or [SingleLoader](cache/core-rx/src/jvmMain/kotlin/com/netcosports/cache/core/SingleLoader.kt)
 instead of responses.
 
-A `CoroutineLoader` / `RxLoader` can return a cached response, a network response or a
+A `CoroutineLoader` / `SingleLoader` can return a cached response, a network response or a
 `Flow<ResponseWrapper<T>>` / `Observable<ResponseWrapper<T>>` with both responses in the specified
 order.
 
@@ -39,11 +40,12 @@ order.
         - [Using Ktor with OpenApiGenerator](#using-ktor-with-openapigenerator)
 2. [Android-only projects with Retrofit and OkHttp](#android-only-projects-with-retrofit-and-okhttp)
     - [Gradle setup for Android-only projects](#gradle-setup-for-android-only-projects)
+        - [Manually wrapping your RetrofitService](#manually-wrapping-your-retrofitservice)
         - [Generating a RetrofitServiceWrapper](#generating-a-retrofitservicewrapper)
 
 ### KMP projects with Ktor. Android uses OkHttp Engine and iOS uses Darwin Engine
 
-You can retrieve a cached response, a network response or a Flow<ResponseWrapper<DATA>>:
+You can retrieve a cached response, a network response or a `Flow<ResponseWrapper<DATA>>`:
 
 ```kotlin
 val cachedData: DATA = coroutineLoader.cache() //suspend fun
@@ -124,7 +126,7 @@ val ktorHttpClientWrapper = KtorHttpClientUtils.createKtorHttpClientWrapper(
 )
 ```
 
-Then create a CoroutineLoader for the request:
+Then create a `CoroutineLoader` for the request:
 
 ```kotlin
 val coroutineLoader: CoroutineLoader<List<Repository>> = ktorHttpClientWrapper.createLoader {
@@ -153,7 +155,7 @@ internal interface ExampleApi {
 }
 ```
 
-First, wrap your ExampleApi:
+First, wrap your `ExampleApi`:
 
 ```kotlin
 // Both OkHttpClients must have the same Cache file. 
@@ -188,7 +190,7 @@ val ktorApiWrapper = KtorHttpClientUtils.createKtorApiWrapper(
 )
 ```
 
-Then create a CoroutineLoader for the request:
+Then create a `CoroutineLoader` for the request:
 
 ```kotlin
 val coroutineLoader: CoroutineLoader<List<Repository>> = ktorApiWrapper.createLoader {
@@ -198,7 +200,8 @@ val coroutineLoader: CoroutineLoader<List<Repository>> = ktorApiWrapper.createLo
 
 ### Android-only projects with Retrofit and OkHttp
 
-You can retrieve a cached response, a network response or a Observable<ResponseWrapper<DATA>>:
+You can retrieve a cached response, a network response or `Flow<ResponseWrapper<DATA>>`/
+`Observable<ResponseWrapper<DATA>>`:
 
 ```kotlin
 // Coroutines
@@ -214,10 +217,10 @@ val flow: Flow<ResponseWrapper<DATA>> = coroutineLoader.toFlow(MergeArguments.CA
     }
 
 // RX
-val cachedData: Single<DATA> = rxLoader.cache()
-val networkData: Single<DATA> = rxLoader.api()
+val cachedData: Single<DATA> = singleLoader.cache()
+val networkData: Single<DATA> = singleLoader.api()
 val observable: Observable<ResponseWrapper<DATA>> =
-    rxLoader.toObservable(MergeArguments.CACHE_AND_API)
+    singleLoader.toObservable(MergeArguments.CACHE_AND_API)
         .map { responseWrapper ->
             if (responseWrapper.isCache) {
                 "CACHE ${responseWrapper.data}"
@@ -238,22 +241,115 @@ dependencies {
     // required
     implementation(project(Config.Deps.LibsModules.cacheCore)) // core, jvm module
     // required to configure cache in the OkHttpClient
-    implementation(project(Config.Deps.LibsModules.okhttpCacheData)) // okhttp, jvm module
+    implementation(project(Config.Deps.LibsModules.okhttpCacheData)) // okhttp utls, jvm module
     
     // You can add BOTH if you use suspend requests but have some legacy Rx requests
     implementation(project(Config.Deps.LibsModules.cacheCoreKtx)) // coroutines, jvm module
     implementation(project(Config.Deps.LibsModules.cacheCoreRx)) // Rx, jvm module
     
-    // add this module ONLY if you use Retrofit Service
-    implementation(project(Config.Deps.LibsModules.retrofitCacheData)) // retrofit service, jvm module
-    // add this module to generate a RetrofitServiceWrapper
+     // add these modules to gerenerate a RetrofitServiceWrapper for your Retrofit Service
+    implementation(project(Config.Deps.LibsModules.retrofitCacheData)) // retrofit utils, jvm module
     kapt(project(Config.Deps.LibsModules.retrofitCacheProcessor)) // retrofit kapt processor, jvm module
 }
 ```
 
+### Manually wrapping your RetrofitService
+
+For example, if you have a `Retrofit Service`:
+
+```kotlin
+interface SampleRetrofitService {
+
+    @GET
+    fun getResponseSingle(@Url url: String): Single<List<Any>>
+
+    @GET
+    fun getResponseObservable(@Url url: String): Observable<List<Any>>
+
+    @GET
+    suspend fun getResponseSuspend(@Url url: String): List<Any>
+}
+```
+
+You can copy this small class and modify it if you want:
+
+```kotlin
+class RetrofitServiceWrapper<SERVICE>(
+    private val retrofitDelegate: (isCache: Boolean) -> SERVICE,
+) {
+
+    val cacheService: SERVICE by lazy { retrofitDelegate(/*isCache = */true) }
+    val apiService: SERVICE by lazy { retrofitDelegate(/*isCache = */false) }
+
+    fun <RESULT : Any> coroutine(delegate: suspend SERVICE.() -> RESULT): CoroutineLoader<RESULT> {
+        return suspendLoader { loaderArguments ->
+            when (loaderArguments) {
+                is LoaderArguments.API -> delegate(apiService)
+                is LoaderArguments.CACHE -> delegate(cacheService)
+            }
+        }
+    }
+
+    fun <RESULT : Any> single(delegate: SERVICE.() -> Single<RESULT>): SingleLoader<RESULT> {
+        return singleLoader { loaderArguments ->
+            when (loaderArguments) {
+                is LoaderArguments.API -> delegate(apiService)
+                is LoaderArguments.CACHE -> delegate(cacheService)
+            }
+        }
+    }
+}
+```
+
+Then wrap your real `RetrofitService`:
+
+```kotlin
+// Both OkHttpClients must have the same Cache file. 
+private val cacheOkHttpClient = OkHttpClient.Builder()
+    .cache(
+        Cache(
+            directory = File(app.cacheDir, "cache"),
+            maxSize = 10L * 1024 * 1024, // 10 MiB
+        )
+    ).build()
+private val apiOkHttpClient = cacheOkHttpClient.newBuilder()
+    .addInterceptor(ChuckerInterceptor(app)) // Configure Chucker for API requests only
+    .build()
+
+val gson = GsonBuilder().setLenient().create()
+val retrofitServiceWrapper = RetrofitServiceWrapper<SampleRetrofitService>(
+    retrofitDelegate = { isCache ->
+        val retrofitBuilder = Retrofit.Builder()
+            .baseUrl("https://baseurl.com/")
+            .client(
+                if (isCache) {
+                    cacheOkHttpClient
+                } else {
+                    apiOkHttpClient
+                }
+            )
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .build()
+            .create(SampleRetrofitService::class.java)
+    }
+)
+```
+
+Get your `CoroutineLoader`, `SingleLoader` or unmodified requests:
+
+```kotlin
+val coroutineLoader: CoroutineLoader<List<Any>> =
+    retrofitServiceWrapper.coroutine { this/*SampleRetrofitService*/.getResponseSuspend(url = url) }
+val singleLoader: SingleLoader<List<Any>> =
+    retrofitServiceWrapper.single { this/*SampleRetrofitService*/.getResponseSingle(url = url) }
+val observable: Observable<List<Any>> =
+    retrofitServiceWrapper.apiService.getResponseObservable(url = url)
+```
+
 ### Generating a RetrofitServiceWrapper
 
-For example, if you have a Retrofit Service:
+For example, if you have a `Retrofit Service`:
 
 ```kotlin
 interface SampleRetrofitService {
@@ -281,12 +377,13 @@ interface SampleRetrofitService {
 Run `assemble` or `kapt{BuildType}Kotlin` task for this module to generate a
 `RetrofitServiceWrapper`.
 Ensure the kapt plugin and processor are added to your module.
-Once the task is completed, the RetrofitServiceWrapper will be generated (in our example it will be
+Once the task is completed, the `RetrofitServiceWrapper` will be generated (in our example it will
+be
 `SampleRetrofitServiceWrapper`)
 
 The `RetrofitServiceWrapper`:
 
-- replaces `Single<T>` with `RxLoader<T>`.
+- replaces `Single<T>` with `SingleLoader<T>`.
 - replaces `suspend fun test(): T` with `fun test(): CoroutineLoader<T>`.
 - Doesn't modify functions returning other types.
 
@@ -295,23 +392,27 @@ public class SampleRetrofitServiceWrapper(
     public val cacheService: SampleRetrofitService,
     public val apiService: SampleRetrofitService,
 ) {
-    public fun getResponseSingle(url: String): RxLoader<List<Any>> {
-        @kotlin.Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
-        return RxLoader(
-            cacheService.getResponseSingle(url),
-            apiService.getResponseSingle(url)
-        )
-    }
-
-    public fun getResponseObservable(url: String): Observable<List<Any>> =
-        apiService.getResponseObservable(url)
 
     public fun getResponseSuspend(url: String): CoroutineLoader<List<Any>> {
-        @kotlin.Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
-        return CoroutineLoader(
-            suspend { cacheService.getResponseSuspend(url) },
-            suspend { apiService.getResponseSuspend(url) }
-        )
+        return suspendLoader { loaderArguments ->
+            when (loaderArguments) {
+                is LoaderArguments.API -> apiService.getResponseSuspend(url)
+                is LoaderArguments.CACHE -> cacheService.getResponseSuspend(url)
+            }
+        }
+    }
+
+    public fun getResponseSingle(url: String): SingleLoader<List<Any>> {
+        return singleLoader { loaderArguments ->
+            when (loaderArguments) {
+                is LoaderArguments.API -> apiService.getResponseSingle(url)
+                is LoaderArguments.CACHE -> cacheService.getResponseSingle(url)
+            }
+        }
+    }
+
+    public fun getResponseObservable(url: String): Observable<List<Any>> {
+        return apiService.getResponseObservable(url)
     }
 
     public companion object {
@@ -319,14 +420,18 @@ public class SampleRetrofitServiceWrapper(
             retrofitBuilder: Retrofit.Builder,
             okHttpClient: OkHttpClient,
             maxStale: Long = DEFAULT_MAX_STALE,
-        ): SampleRetrofitServiceWrapper =
-            createServiceWrapper<SampleRetrofitService, SampleRetrofitServiceWrapper>(
-                retrofitBuilder, okHttpClient, maxStale
+        ): SampleRetrofitServiceWrapper {
+            return createServiceWrapper<SampleRetrofitService, SampleRetrofitServiceWrapper>(
+                retrofitBuilder = retrofitBuilder,
+                okHttpClient = okHttpClient,
+                maxStale = maxStale,
             ) { cacheService, apiService ->
                 SampleRetrofitServiceWrapper(cacheService, apiService)
             }
+        }
     }
 }
+
 ```
 
 Initialize the `SampleRetrofitServiceWrapper`:
@@ -385,11 +490,11 @@ val apiService = Retrofit.Builder()
 return SampleRetrofitServiceWrapper(cacheService, apiService)
 ```
 
-Get your RxLoader<T>, CoroutineLoader<T> or unmodified requests:
+Get your `CoroutineLoader`, `SingleLoader` or unmodified requests:
 
 ```kotlin
-val rxLoader: RxLoader<List<Any>> = retrofitServiceWrapper.getResponseSingle(url = url)
-val observable: Observable<List<Any>> = retrofitServiceWrapper.getResponseObservable(url = url)
 val coroutineLoader: CoroutineLoader<List<Any>> =
     retrofitServiceWrapper.getResponseSuspend(url = url)
+val singleLoader: SingleLoader<List<Any>> = retrofitServiceWrapper.getResponseSingle(url = url)
+val observable: Observable<List<Any>> = retrofitServiceWrapper.getResponseObservable(url = url)
 ```

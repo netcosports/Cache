@@ -1,18 +1,18 @@
 package com.netcosports.cachesample.domain
 
 import com.netcosports.cache.core.CoroutineLoader
-import com.netcosports.cache.core.RxLoader
+import com.netcosports.cache.core.SingleLoader
 import io.reactivex.Observable
 
 interface SampleCacheRepository {
 
-    fun getRetrofitSingleToLoader(url: String): RxLoader<List<Any>>
+    fun getRetrofitSingleToLoader(url: String): SingleLoader<List<Any>>
 
     fun getRetrofitSingleToLoader(
         url: String,
         requestA: List<Any>,
         requestB: List<Any>,
-    ): RxLoader<List<Any>>
+    ): SingleLoader<List<Any>>
 
     fun getRetrofitObservable(url: String): Observable<List<Any>>
 

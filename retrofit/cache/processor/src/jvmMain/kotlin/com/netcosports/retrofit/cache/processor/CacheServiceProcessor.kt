@@ -1,7 +1,7 @@
 package com.netcosports.retrofit.cache.processor
 
 import com.netcosports.cache.core.CoroutineLoader
-import com.netcosports.cache.core.RxLoader
+import com.netcosports.cache.core.SingleLoader
 import com.netcosports.okhttp.cache.data.OkHttpCacheInterceptor
 import com.netcosports.retrofit.cache.data.CacheService
 import com.squareup.kotlinpoet.ClassName
@@ -176,7 +176,7 @@ class CacheServiceProcessor : AbstractProcessor() {
             funReturnType is ParameterizedTypeName && funReturnType.rawType.simpleName == singleClassName -> {
                 useCustomCoroutineBlock = false
                 useCustomRxBlock = true
-                newFunReturnType = RxLoader::class.asClassName()
+                newFunReturnType = SingleLoader::class.asClassName()
                     .parameterizedBy(funReturnType.typeArguments)
             }
 
@@ -192,12 +192,13 @@ class CacheServiceProcessor : AbstractProcessor() {
                 CodeBlock.builder()
                     .addStatement(
                         """
-                    |@kotlin.Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
-                    |return %T(
-                    |    suspend { $CACHE_SERVICE_FIELD.$funName($funParams) },
-                    |    suspend { $API_SERVICE_FIELD.$funName($funParams) }
-                    |)
-                    """.trimMargin(), CoroutineLoader::class
+                        |return com.netcosports.cache.core.suspendLoader { loaderArguments ->
+                        |   when (loaderArguments) {
+                        |       is com.netcosports.cache.core.LoaderArguments.API -> $API_SERVICE_FIELD.$funName($funParams)
+                        |       is com.netcosports.cache.core.LoaderArguments.CACHE -> $CACHE_SERVICE_FIELD.$funName($funParams)
+                        |   }
+                        |}
+                        """.trimMargin(),
                     ).build()
             }
 
@@ -205,12 +206,13 @@ class CacheServiceProcessor : AbstractProcessor() {
                 CodeBlock.builder()
                     .addStatement(
                         """
-                    |@kotlin.Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
-                    |return %T(
-                    |    $CACHE_SERVICE_FIELD.$funName($funParams),
-                    |    $API_SERVICE_FIELD.$funName($funParams)
-                    |)
-                    """.trimMargin(), RxLoader::class
+                        |return com.netcosports.cache.core.singleLoader { loaderArguments ->
+                        |   when (loaderArguments) {
+                        |       is com.netcosports.cache.core.LoaderArguments.API -> $API_SERVICE_FIELD.$funName($funParams)
+                        |       is com.netcosports.cache.core.LoaderArguments.CACHE -> $CACHE_SERVICE_FIELD.$funName($funParams)
+                        |   }
+                        |}
+                        """.trimMargin(),
                     ).build()
             }
 

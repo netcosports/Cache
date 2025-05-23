@@ -4,7 +4,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.Function
 
-class RxLoader<DATA> internal constructor(
+class SingleLoader<DATA> internal constructor(
     internal val cacheSingle: Single<DATA>,
     internal val apiSingle: Single<DATA>
 ) {
@@ -19,31 +19,31 @@ class RxLoader<DATA> internal constructor(
 
 fun <DATA> singleLoader(
     delegate: (loaderArguments: LoaderArguments) -> Single<DATA>
-): RxLoader<DATA> {
+): SingleLoader<DATA> {
     @Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
-    return RxLoader(
+    return SingleLoader(
         cacheSingle = delegate(LoaderArguments.getLoaderArgument(isCache = true)),
         apiSingle = delegate(LoaderArguments.getLoaderArgument(isCache = false))
     )
 }
 
-fun <FROM, TO> RxLoader<FROM>.change(
+fun <FROM, TO> SingleLoader<FROM>.change(
     delegate: Single<FROM>.() -> Single<TO>
-): RxLoader<TO> {
+): SingleLoader<TO> {
     return singleLoader { loaderArguments ->
         val originalSingle = load(loaderArguments = loaderArguments)
         delegate(originalSingle)
     }
 }
 
-fun <FROM, TO> RxLoader<FROM>.map(mapper: (FROM) -> TO): RxLoader<TO> {
+fun <FROM, TO> SingleLoader<FROM>.map(mapper: (FROM) -> TO): SingleLoader<TO> {
     return change { /*single.*/map { data -> mapper(data) } }
 }
 
-fun <DATA> RxLoader<DATA>.cache(): Single<DATA> = cacheSingle
-fun <DATA> RxLoader<DATA>.api(): Single<DATA> = apiSingle
+fun <DATA> SingleLoader<DATA>.cache(): Single<DATA> = cacheSingle
+fun <DATA> SingleLoader<DATA>.api(): Single<DATA> = apiSingle
 
-fun <DATA : Any> RxLoader<DATA>.toObservable(
+fun <DATA : Any> SingleLoader<DATA>.toObservable(
     mergeArguments: MergeArguments
 ): Observable<ResponseWrapper<DATA>> {
     return when (mergeArguments) {

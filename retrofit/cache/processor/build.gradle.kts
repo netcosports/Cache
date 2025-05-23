@@ -12,6 +12,7 @@ kotlin {
 
                 implementation(project(Config.Deps.LibsModules.okhttpCacheData))
                 implementation(project(Config.Deps.LibsModules.retrofitCacheData))
+                implementation(project(Config.Deps.LibsModules.cacheCore))
                 implementation(project(Config.Deps.LibsModules.cacheCoreRx))
                 implementation(project(Config.Deps.LibsModules.cacheCoreKtx))
 
