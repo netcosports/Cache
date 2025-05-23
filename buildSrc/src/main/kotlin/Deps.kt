@@ -3,7 +3,7 @@ import org.gradle.api.JavaVersion
 object Config {
 
     object Build {
-        const val kotlinVersion = "2.1.10"
+        const val kotlinVersion = "2.1.21"
 
         const val compileSdk = 35
         const val minSdk = 21
@@ -15,7 +15,7 @@ object Config {
         const val packageNameDev = "com.netcosports.components.sample"
         const val packageNameProd = "com.netcosports.components.sample"
 
-        const val versionName = "2.4.0"
+        const val versionName = "3.0.0"
         const val versionOffset = 0
     }
 
@@ -54,10 +54,9 @@ object Config {
         }
 
         object Coroutines {
-            const val version = "1.10.1"
+            const val version = "1.10.2"
             const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
             const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
-            const val ios = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$version"
         }
 
         object NetcoComponents {
@@ -66,7 +65,7 @@ object Config {
         }
 
         object Ktor {
-            const val version = "3.1.1"
+            const val version = "3.1.3"
             const val core = "io.ktor:ktor-client-core:$version"
             const val json = "io.ktor:ktor-client-json:$version"
             const val logging = "io.ktor:ktor-client-logging:$version"
@@ -98,9 +97,9 @@ object Config {
             const val kotlinJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Build.kotlinVersion}"
             const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:${Build.kotlinVersion}"
 
-            const val kotlinPoet = "com.squareup:kotlinpoet:2.1.0"
+            const val kotlinPoet = "com.squareup:kotlinpoet:2.2.0"
 
-            const val kotlinSerialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0"
+            const val kotlinSerialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1"
         }
 
         object LibsModules {
