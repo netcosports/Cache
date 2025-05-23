@@ -1,7 +1,7 @@
 package com.netcosports.cachesample.data
 
 import com.netcosports.cache.core.CoroutineLoader
-import com.netcosports.cache.core.RxLoader
+import com.netcosports.cache.core.SingleLoader
 import com.netcosports.cache.shared.SampleKtorApiDataSource
 import com.netcosports.cachesample.domain.SampleCacheRepository
 import io.reactivex.Observable
@@ -12,8 +12,8 @@ class SampleCacheRepositoryImpl(
     private val ktorApiDataSource: SampleKtorApiDataSource
 ) : SampleCacheRepository {
 
-    override fun getRetrofitSingleToLoader(url: String): RxLoader<List<Any>> {
-        return manuallyWrappedRetrofit.single { this.getResponseSingle(url = url) }
+    override fun getRetrofitSingleToLoader(url: String): SingleLoader<List<Any>> {
+        return manuallyWrappedRetrofit.single { this/*SampleRetrofitServiceWrapper*/.getResponseSingle(url = url) }
         return generatedRetrofitWrapper.getResponseSingle(url = url)
     }
 
@@ -21,7 +21,7 @@ class SampleCacheRepositoryImpl(
         url: String,
         requestA: List<Any>,
         requestB: List<Any>
-    ): RxLoader<List<Any>> {
+    ): SingleLoader<List<Any>> {
         return getRetrofitSingleToLoader(url = url)
     }
 
@@ -31,7 +31,7 @@ class SampleCacheRepositoryImpl(
     }
 
     override fun getRetrofitSuspendToLoader(url: String): CoroutineLoader<List<Any>> {
-        return manuallyWrappedRetrofit.coroutine { this.getResponseSuspend(url = url) }
+        return manuallyWrappedRetrofit.coroutine { this/*SampleRetrofitServiceWrapper*/.getResponseSuspend(url = url) }
         return generatedRetrofitWrapper.getResponseSuspend(url = url)
     }
 

@@ -2,7 +2,7 @@ package com.netcosports.cachesample.data
 
 import com.netcosports.cache.core.CoroutineLoader
 import com.netcosports.cache.core.LoaderArguments
-import com.netcosports.cache.core.RxLoader
+import com.netcosports.cache.core.SingleLoader
 import com.netcosports.cache.core.singleLoader
 import com.netcosports.cache.core.suspendLoader
 import io.reactivex.Single
@@ -23,7 +23,7 @@ class SampleRetrofitServiceManuallyWrapped<SERVICE>(
         }
     }
 
-    fun <RESULT : Any> single(delegate: SERVICE.() -> Single<RESULT>): RxLoader<RESULT> {
+    fun <RESULT : Any> single(delegate: SERVICE.() -> Single<RESULT>): SingleLoader<RESULT> {
         return singleLoader { loaderArguments ->
             when (loaderArguments) {
                 is LoaderArguments.API -> delegate(apiService)
