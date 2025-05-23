@@ -1,0 +1,30 @@
+/.idea/*
+
+## OS X
+.DS_Store
+
+## User settings
+xcuserdata/
+
+## Obj-C/Swift specific
+*.hmap
+
+## Ruby
+vendor
+
+## App packaging
+DerivedData
+build
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+## Git
+.orig
+
+## CocoaPods
+Pods/
+*.xcworkspace
+
+## Lint
+swiftlint_result.txt
