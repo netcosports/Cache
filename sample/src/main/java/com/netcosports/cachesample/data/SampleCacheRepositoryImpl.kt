@@ -7,12 +7,14 @@ import com.netcosports.cachesample.domain.SampleCacheRepository
 import io.reactivex.Observable
 
 class SampleCacheRepositoryImpl(
-    private val retrofitServiceWrapper: SampleRetrofitServiceWrapper,
+    private val manuallyWrappedRetrofit: SampleRetrofitServiceManuallyWrapped<SampleRetrofitService>,
+    private val generatedRetrofitWrapper: SampleRetrofitServiceWrapper,
     private val ktorApiDataSource: SampleKtorApiDataSource
 ) : SampleCacheRepository {
 
     override fun getRetrofitSingleToLoader(url: String): RxLoader<List<Any>> {
-        return retrofitServiceWrapper.getResponseSingle(url = url)
+        return manuallyWrappedRetrofit.single { this.getResponseSingle(url = url) }
+        return generatedRetrofitWrapper.getResponseSingle(url = url)
     }
 
     override fun getRetrofitSingleToLoader(
@@ -24,11 +26,13 @@ class SampleCacheRepositoryImpl(
     }
 
     override fun getRetrofitObservable(url: String): Observable<List<Any>> {
-        return retrofitServiceWrapper.getResponseObservable(url = url)
+        return manuallyWrappedRetrofit.apiService.getResponseObservable(url = url)
+        return generatedRetrofitWrapper.getResponseObservable(url = url)
     }
 
     override fun getRetrofitSuspendToLoader(url: String): CoroutineLoader<List<Any>> {
-        return retrofitServiceWrapper.getResponseSuspend(url = url)
+        return manuallyWrappedRetrofit.coroutine { this.getResponseSuspend(url = url) }
+        return generatedRetrofitWrapper.getResponseSuspend(url = url)
     }
 
     override fun getRetrofitSuspendToLoader(

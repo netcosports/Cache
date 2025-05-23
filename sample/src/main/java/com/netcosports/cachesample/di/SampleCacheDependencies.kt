@@ -8,6 +8,7 @@ import com.netcosports.cache.shared.SampleAndroidPlatform
 import com.netcosports.cache.shared.SampleKtorApiDataSource
 import com.netcosports.cachesample.data.SampleCacheRepositoryImpl
 import com.netcosports.cachesample.data.SampleRetrofitService
+import com.netcosports.cachesample.data.SampleRetrofitServiceManuallyWrapped
 import com.netcosports.cachesample.data.SampleRetrofitServiceWrapper
 import com.netcosports.cachesample.domain.SampleCacheRepository
 import com.netcosports.okhttp.cache.data.OkHttpClientUtils
@@ -31,11 +32,13 @@ class SampleCacheDependencies(app: Application) {
     private val apiOkHttpClient = cacheOkHttpClient.newBuilder()
         .addInterceptor(ChuckerInterceptor(app))
         .build()
+    private val gson = GsonBuilder().setLenient().create()
 
     val logger = SampleAndroidLogger()
 
     val repository: SampleCacheRepository = SampleCacheRepositoryImpl(
-        retrofitServiceWrapper = getRetrofitWrapper(),
+        manuallyWrappedRetrofit = getManuallyWrappedRetrofit(),
+        generatedRetrofitWrapper = getGeneratedRetrofitWrapper(),
         ktorApiDataSource = getKtorApiDataSource()
     )
 
@@ -52,10 +55,29 @@ class SampleCacheDependencies(app: Application) {
         )
     }
 
+    private fun getManuallyWrappedRetrofit(): SampleRetrofitServiceManuallyWrapped<SampleRetrofitService> {
+        return SampleRetrofitServiceManuallyWrapped(
+            retrofitDelegate = { isCache ->
+                Retrofit.Builder()
+                    .baseUrl("https://api.curator.io/v1/")
+                    .client(
+                        if (isCache) {
+                            cacheOkHttpClient
+                        } else {
+                            apiOkHttpClient
+                        }
+                    )
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+                    .build()
+                    .create(SampleRetrofitService::class.java)
+            }
+        )
+    }
+
     @Suppress("UNREACHABLE_CODE")
-    private fun getRetrofitWrapper(): SampleRetrofitServiceWrapper {
+    private fun getGeneratedRetrofitWrapper(): SampleRetrofitServiceWrapper {
         // just provide Retrofit.Builder with OkHttpClient and get the Wrapper
-        val gson = GsonBuilder().setLenient().create()
         val retrofitBuilder = Retrofit.Builder()
             .baseUrl("https://api.curator.io/v1/")
             .addConverterFactory(GsonConverterFactory.create(gson))
