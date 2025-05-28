@@ -28,5 +28,5 @@ kotlin {
 }
 
 initPublishing(
-    artifactId = Config.Publishing.retrofitCacheProcessor,
+    artifactId = Config.Publishing.cacheRetrofitProcessor,
 )

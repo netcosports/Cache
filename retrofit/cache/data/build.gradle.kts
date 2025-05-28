@@ -19,5 +19,5 @@ kotlin {
 }
 
 initPublishing(
-    artifactId = Config.Publishing.retrofitCacheData,
+    artifactId = Config.Publishing.cacheRetrofitData,
 )

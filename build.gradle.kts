@@ -3,12 +3,6 @@ buildscript {
         google()
         gradlePluginPortal()
         maven(url = "https://plugins.gradle.org/m2/")
-        maven(url = repoUrl) {
-            credentials {
-                username = repoUsername
-                password = repoPassword
-            }
-        }
     }
     dependencies {
         classpath("com.android.tools.build:gradle:8.10.0")
@@ -21,12 +15,6 @@ allprojects {
         google()
         gradlePluginPortal()
         maven(url = "https://plugins.gradle.org/m2/")
-        maven(url = repoUrl) {
-            credentials {
-                username = repoUsername
-                password = repoPassword
-            }
-        }
     }
 }
 

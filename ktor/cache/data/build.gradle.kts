@@ -16,7 +16,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = Config.Publishing.ktorCacheData
+            baseName = Config.Publishing.cacheKtorData
             transitiveExport = true
             xcf.add(this)
         }
@@ -59,5 +59,5 @@ android {
 }
 
 initPublishing(
-    artifactId = Config.Publishing.ktorCacheData,
+    artifactId = Config.Publishing.cacheKtorData,
 )

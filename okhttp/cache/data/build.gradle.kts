@@ -16,5 +16,5 @@ kotlin {
 }
 
 initPublishing(
-    artifactId = Config.Publishing.okhttpCacheData,
+    artifactId = Config.Publishing.cacheOkHttpData,
 )

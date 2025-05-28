@@ -33,12 +33,12 @@ object Config {
         const val cacheCoreKtx = "cache-core-ktx"
         const val cacheCoreRx = "cache-core-rx"
 
-        const val okhttpCacheData = "okhttp-cache-data"
+        const val cacheOkHttpData = "cache-okhttp-data"
 
-        const val retrofitCacheData = "retrofit-cache-data"
-        const val retrofitCacheProcessor = "retrofit-cache-processor"
+        const val cacheRetrofitData = "cache-retrofit-data"
+        const val cacheRetrofitProcessor = "cache-retrofit-processor"
 
-        const val ktorCacheData = "ktor-cache-data"
+        const val cacheKtorData = "cache-ktor-data"
 
         const val shared = "shared"
     }
