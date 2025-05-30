@@ -26,7 +26,7 @@ object Config {
         fun ios() = arrayOf("iosArm64", "iosX64", "iosSimulatorArm64")
         fun kmm() = arrayOf("kotlinMultiplatform", "metadata")
 
-        const val cacheGroupId = "com.origins-digital.kmp.cache"
+        const val cacheGroupId = "io.github.netcosports.kmm.cache"
         const val cacheVersion = Build.versionName //"1.0.0"
 
         const val cacheCore = "cache-core"

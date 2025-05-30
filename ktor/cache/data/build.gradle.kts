@@ -58,6 +58,11 @@ android {
     namespace = "com.netcosports.ktor.cache.data"
 }
 
+val emptyJavadocJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
+}
+
 initPublishing(
     artifactId = Config.Publishing.cacheKtorData,
+    javadoc = emptyJavadocJar,
 )

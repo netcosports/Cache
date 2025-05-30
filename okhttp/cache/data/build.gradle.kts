@@ -15,6 +15,11 @@ kotlin {
     }
 }
 
+val emptyJavadocJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
+}
+
 initPublishing(
     artifactId = Config.Publishing.cacheOkHttpData,
+    javadoc = emptyJavadocJar,
 )

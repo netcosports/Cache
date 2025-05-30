@@ -1,9 +1,14 @@
 import org.gradle.api.Project
 
-val Project.repoUrl: String get() = "https://maven.pkg.github.com/netcosports/maven-packages"
-val Project.repoUsername: String get() = this.properties["ghUsername"].toString()
-val Project.repoPassword: String get() = this.properties["ghPassword"].toString()
+val Project.gpgSigningKey: String get() = getPropertyByName("gpgSigningKey")
+val Project.gpgSigningKeyId: String get() = getPropertyByName("gpgSigningKeyIddd")
+val Project.gpgSigningPassphrase: String get() = getPropertyByName("gpgSigningPassphrase")
+val Project.sonatypeUsername: String get() = getPropertyByName("sonatypeUsername")
+val Project.sonatypePassword: String get() = getPropertyByName("sonatypePassword")
 
+private fun Project.getPropertyByName(name: String): String {
+    return properties[name]?.toString() ?: ""
+}
 
 fun getCustomVersionName(): String {
     return System.getenv("VERSION_NAME") ?: Config.Build.versionName
