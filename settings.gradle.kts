@@ -9,17 +9,16 @@ pluginManagement {
 }
 
 include(":cache:core")
-include(":cache:core-ktx")
-include(":cache:core-rx")
+include(":cache:ktx")
+include(":cache:rx")
 
-include(":okhttp:cache:data")
+include(":cache:okhttp:data")
 
-include(":retrofit:cache:data")
-include(":retrofit:cache:processor")
+include(":cache:retrofit:data")
+include(":cache:retrofit:processor")
 
-include(":ktor:cache:data")
-
-
+include(":cache:ktor:data")
 
 include(":shared")
+
 include(":sample")

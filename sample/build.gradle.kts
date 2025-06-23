@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.netcosports.cachesample"
+    namespace = "com.originsdigital.cachesample"
 
     compileSdk = Config.Build.compileSdk
 
@@ -55,7 +55,7 @@ android {
 }
 
 dependencies {
-    implementation(Config.Deps.Kotlin.kotlinJdk8)
+    implementation(Config.Deps.Kotlin.kotlin)
     implementation(Config.Deps.Coroutines.android)
 
     implementation(Config.Deps.AndroidX.appcompat)
@@ -68,16 +68,16 @@ dependencies {
     implementation(project(Config.Deps.LibsModules.shared))
 
     implementation(project(Config.Deps.LibsModules.cacheCore))
-    implementation(project(Config.Deps.LibsModules.cacheCoreKtx))
-    implementation(project(Config.Deps.LibsModules.cacheCoreRx))
+    implementation(project(Config.Deps.LibsModules.cacheKtx))
+    implementation(project(Config.Deps.LibsModules.cacheRx))
 
     implementation(Config.Deps.RX.rxJava)
     implementation(Config.Deps.RX.rxAndroid)
     implementation(Config.Deps.Retrofit.rxjava2)
 
-    implementation(project(Config.Deps.LibsModules.okhttpCacheData))
-    implementation(project(Config.Deps.LibsModules.retrofitCacheData))
-    kapt(project(Config.Deps.LibsModules.retrofitCacheProcessor))
+    implementation(project(Config.Deps.LibsModules.cacheOkHttpData))
+    implementation(project(Config.Deps.LibsModules.cacheRetrofitData))
+    kapt(project(Config.Deps.LibsModules.cacheRetrofitProcessor))
     implementation(Config.Deps.Retrofit.convertedGson)
     implementation(Config.Deps.Retrofit.retrofit)
     implementation(Config.Deps.OkHttp.okHttp)

@@ -32,10 +32,10 @@ kotlin {
 
                 implementation(project(Config.Deps.LibsModules.cacheCore))
 
-                implementation(project(Config.Deps.LibsModules.cacheCoreKtx))
+                implementation(project(Config.Deps.LibsModules.cacheKtx))
                 implementation(Config.Deps.Coroutines.core)
 
-                implementation(project(Config.Deps.LibsModules.ktorCacheData))
+                implementation(project(Config.Deps.LibsModules.cacheKtorData))
                 implementation(Config.Deps.Ktor.core)
                 implementation(Config.Deps.Ktor.json)
                 implementation(Config.Deps.Ktor.logging)
@@ -65,6 +65,8 @@ kotlin {
 }
 
 android {
+    namespace = "com.originsdigital.cache.shared"
+
     compileSdk = Config.Build.compileSdk
 
     defaultConfig {
@@ -72,5 +74,4 @@ android {
     }
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    namespace = "com.netcosports.cache.shared"
 }
