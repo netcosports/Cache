@@ -3,7 +3,6 @@ package com.originsdigital.retrofit.cache.processor
 import com.originsdigital.cache.core.CoroutineLoader
 import com.originsdigital.cache.core.LoaderArguments
 import com.originsdigital.cache.core.SingleLoader
-import com.originsdigital.okhttp.cache.data.OkHttpCacheInterceptor
 import com.originsdigital.retrofit.cache.data.CacheService
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -20,9 +19,7 @@ import com.squareup.kotlinpoet.WildcardTypeName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import io.reactivex.Single
-import okhttp3.OkHttpClient
 import org.jetbrains.annotations.Nullable
-import retrofit2.Retrofit
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
@@ -101,7 +98,6 @@ class CacheServiceProcessor : AbstractProcessor() {
                     .initializer(API_SERVICE_FIELD)
                     .build()
             )
-            .addType(generateCompanion(serviceClass, servicePackage, generatedServiceName))
     }
 
     private fun generateFuns(element: Element): List<FunSpec> {
@@ -230,55 +226,6 @@ class CacheServiceProcessor : AbstractProcessor() {
         return this
     }
 
-    private fun generateCompanion(
-        serviceClass: ClassName,
-        servicePackage: String,
-        generatedServiceName: String
-    ): TypeSpec {
-        return TypeSpec.companionObjectBuilder()
-            .addFunction(generateCompanionFun(serviceClass, servicePackage, generatedServiceName))
-            .build()
-    }
-
-    private fun generateCompanionFun(
-        serviceClass: ClassName,
-        servicePackage: String,
-        generatedServiceName: String
-    ): FunSpec {
-        val generatedServiceClass = ClassName(servicePackage, generatedServiceName)
-        return FunSpec.builder(COMPANION_FUN_NAME)
-            .addParameter(COMPANION_FUN_PARAM_RETROFIT, Retrofit.Builder::class.java)
-            .addParameter(COMPANION_FUN_PARAM_OKHTTP, OkHttpClient::class.java)
-            .addParameter(
-                ParameterSpec.builder(COMPANION_FUN_PARAM_MAX_STALE, Long::class)
-                    .defaultValue(
-                        CodeBlock.of(
-                            "%M",
-                            MemberName(
-                                OkHttpCacheInterceptor.Companion::class.java.canonicalName,
-                                "DEFAULT_MAX_STALE"
-                            )
-                        )
-                    )
-                    .build()
-            )
-            .addCode(
-                CodeBlock.builder()
-                    .addStatement(
-                        """
-                        |return %M<${serviceClass.simpleName}, $generatedServiceName>(
-                        |   $COMPANION_FUN_PARAM_RETROFIT, $COMPANION_FUN_PARAM_OKHTTP, $COMPANION_FUN_PARAM_MAX_STALE
-                        |) { $COMPANION_FUN_FIELD_CACHE_SERVICE, $COMPANION_FUN_FIELD_API_SERVICE ->
-                        |   $generatedServiceName($COMPANION_FUN_FIELD_CACHE_SERVICE, $COMPANION_FUN_FIELD_API_SERVICE)
-                        |}""".trimMargin(),
-                        MemberName("com.originsdigital.retrofit.cache.data", "createServiceWrapper")
-                    )
-                    .build()
-            )
-            .returns(generatedServiceClass)
-            .build()
-    }
-
     private fun FileSpec.save(): Boolean {
         writeTo(processingEnv.filer)
         return true
@@ -352,13 +299,6 @@ class CacheServiceProcessor : AbstractProcessor() {
 
     companion object {
         private const val CLASS_SUFFIX = "Wrapper"
-
-        private const val COMPANION_FUN_NAME = "create"
-        private const val COMPANION_FUN_PARAM_RETROFIT = "retrofitBuilder"
-        private const val COMPANION_FUN_PARAM_OKHTTP = "okHttpClient"
-        private const val COMPANION_FUN_PARAM_MAX_STALE = "maxStale"
-        private const val COMPANION_FUN_FIELD_CACHE_SERVICE = "cacheService"
-        private const val COMPANION_FUN_FIELD_API_SERVICE = "apiService"
 
         private const val CACHE_SERVICE_FIELD = "cacheService"
         private const val API_SERVICE_FIELD = "apiService"

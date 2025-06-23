@@ -35,8 +35,6 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(Config.Deps.Ktor.android)
-
-                implementation(project(Config.Deps.LibsModules.okhttpCacheData))
             }
         }
         val iosX64Main by getting

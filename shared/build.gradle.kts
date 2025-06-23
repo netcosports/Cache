@@ -35,7 +35,7 @@ kotlin {
                 implementation(project(Config.Deps.LibsModules.cacheCoreKtx))
                 implementation(Config.Deps.Coroutines.core)
 
-                implementation(project(Config.Deps.LibsModules.ktorCacheData))
+                implementation(project(Config.Deps.LibsModules.cacheKtorData))
                 implementation(Config.Deps.Ktor.core)
                 implementation(Config.Deps.Ktor.json)
                 implementation(Config.Deps.Ktor.logging)

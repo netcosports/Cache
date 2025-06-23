@@ -8,15 +8,15 @@ import io.ktor.client.HttpClient
 typealias KtorHttpClientWrapper = KtorWrapper<HttpClient>
 
 class KtorWrapper<CLIENT>(
-    val cache: CLIENT,
-    val api: CLIENT
+    val cacheClient: CLIENT,
+    val apiClient: CLIENT
 ) {
 
     fun <DATA> createLoader(delegate: suspend CLIENT.() -> DATA): CoroutineLoader<DATA> {
         return suspendLoader { loaderArguments ->
             when (loaderArguments) {
-                is LoaderArguments.CACHE -> delegate(cache)
-                is LoaderArguments.API -> delegate(api)
+                is LoaderArguments.CACHE -> delegate(cacheClient)
+                is LoaderArguments.API -> delegate(apiClient)
             }
         }
     }

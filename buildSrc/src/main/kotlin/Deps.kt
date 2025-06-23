@@ -102,12 +102,12 @@ object Config {
             const val cacheCoreKtx = ":cache:core-ktx"
             const val cacheCoreRx = ":cache:core-rx"
 
-            const val okhttpCacheData = ":okhttp:cache:data"
+            const val cacheOkHttpData = ":okhttp:cache:data"
 
-            const val retrofitCacheData = ":retrofit:cache:data"
-            const val retrofitCacheProcessor = ":retrofit:cache:processor"
+            const val cacheRetrofitData = ":retrofit:cache:data"
+            const val cacheRetrofitProcessor = ":retrofit:cache:processor"
 
-            const val ktorCacheData = ":ktor:cache:data"
+            const val cacheKtorData = ":ktor:cache:data"
 
             const val shared = ":shared"
         }
@@ -119,7 +119,7 @@ object Config {
             const val cacheCoreKtx = "${Publishing.cacheGroupId}:cache-core-ktx:$cacheVersion"
             const val cacheCoreRx = "${Publishing.cacheGroupId}:cache-core-rx:$cacheVersion"
 
-            const val cacheOkhttData = "${Publishing.cacheGroupId}:cache-okhttp-data:$cacheVersion"
+            const val cacheOkHttData = "${Publishing.cacheGroupId}:cache-okhttp-data:$cacheVersion"
 
             const val cacheRetrofitData = "${Publishing.cacheGroupId}:cache-retrofit-data:$cacheVersion"
             const val cacheRetrofitProcessor = "${Publishing.cacheGroupId}:cache-retrofit-processor:$cacheVersion"

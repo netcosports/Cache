@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.originsdigital.cache.core.MergeArguments
 import com.originsdigital.cache.core.ResponseWrapper
 import com.originsdigital.cache.core.api
+import com.originsdigital.cache.core.cache
 import com.originsdigital.cache.core.map
 import com.originsdigital.cache.core.singleLoader
 import com.originsdigital.cache.core.suspendLoader
@@ -27,6 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -52,6 +54,7 @@ class SampleCacheViewModel(app: Application) : AndroidViewModel(app) {
 
     private var job: Job? = null
     private var disposable: Disposable? = null
+    private val testFlatMapToApiOnly = false
 
     fun forceReload() {
         sceneFlow.value = sceneFlow.value.toLoading(Unit, true)
@@ -101,13 +104,16 @@ class SampleCacheViewModel(app: Application) : AndroidViewModel(app) {
             }
                 .toFlow(mergeArguments)
                 .combine(
-                    // example if you need to combine loaders chain with an API request
-                    flow = flow {
-                        val requestD = repository.getKtorLoader(url = GISTS) // request D
-                            .api()
-//                            .cache()
-                        log("loadKtorSuspendToLoader suspendLoader zip requestD=$requestD")
-                        emit(requestD)
+                    flow = if (testFlatMapToApiOnly) {
+                        // example if you need to combine loaders chain with an API request
+                        flow {
+                            val requestD = repository.getKtorLoader(url = GISTS) // request D
+                                .api()
+                            log("loadKtorSuspendToLoader suspendLoader zip requestD=$requestD")
+                            emit(requestD)
+                        }
+                    } else {
+                        flowOf(emptyList())
                     },
                     transform = { responseWrapper, requestD ->
                         responseWrapper.map { data ->
@@ -170,12 +176,17 @@ class SampleCacheViewModel(app: Application) : AndroidViewModel(app) {
             }
                 .toFlow(mergeArguments)
                 .combine(
-                    // example if you need to combine loaders chain with an API request
-                    flow = flow {
-                        val requestD = repository.getKtorLoader(url = GISTS) // request D
-                            .api()
-                        log("loadRetrofitSuspendToLoader suspendLoader zip requestD=$requestD")
-                        emit(requestD)
+                    flow = if (testFlatMapToApiOnly) {
+                        // example if you need to combine loaders chain with an API request
+                        flow {
+                            val requestD = repository.getKtorLoader(url = GISTS) // request D
+//                            .api()
+                                .cache()
+                            log("loadRetrofitSuspendToLoader suspendLoader zip requestD=$requestD")
+                            emit(requestD)
+                        }
+                    } else {
+                        flowOf(emptyList())
                     },
                     transform = { responseWrapper, requestD ->
                         responseWrapper.map { data ->
@@ -232,11 +243,15 @@ class SampleCacheViewModel(app: Application) : AndroidViewModel(app) {
                     }
             }
                 .toObservable(mergeArguments),
-            // example if you need to combine loaders chain with an API request
-            repository.getRetrofitSingleToLoader(url = GISTS) // request D
-                .api()
-                .doOnSuccess { log("loadRetrofitSingleToLoader singleLoader zip requestD=$it") }
-                .toObservable()
+            if (testFlatMapToApiOnly) {
+                // example if you need to combine loaders chain with an API request
+                repository.getRetrofitSingleToLoader(url = GISTS) // request D
+                    .api()
+                    .doOnSuccess { log("loadRetrofitSingleToLoader singleLoader zip requestD=$it") }
+                    .toObservable()
+            } else {
+                Observable.just(emptyList<Any>())
+            }
         ) { responseWrapper, requestD ->
             responseWrapper.map { data ->
                 Result(

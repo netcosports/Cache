@@ -1,7 +1,6 @@
 package com.originsdigital.cachesample.di
 
 import android.app.Application
-import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.GsonBuilder
 import com.originsdigital.cache.shared.SampleAndroidLogger
 import com.originsdigital.cache.shared.SampleAndroidPlatform
@@ -11,7 +10,8 @@ import com.originsdigital.cachesample.data.SampleRetrofitService
 import com.originsdigital.cachesample.data.SampleRetrofitServiceManuallyWrapped
 import com.originsdigital.cachesample.data.SampleRetrofitServiceWrapper
 import com.originsdigital.cachesample.domain.SampleCacheRepository
-import com.originsdigital.okhttp.cache.data.OkHttpClientUtils
+import com.originsdigital.okhttp.cache.data.OkHttpCacheInterceptor
+import com.originsdigital.okhttp.cache.data.setupCache
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -22,27 +22,36 @@ import java.io.File
 
 class SampleCacheDependencies(app: Application) {
 
-    private val cacheOkHttpClient = OkHttpClient.Builder()
-        .cache(
-            Cache(
-                directory = File(app.cacheDir, "cache"),
-                maxSize = 10L * 1024 * 1024, // 10 MiB
-            )
-        ).build()
-    private val apiOkHttpClient = cacheOkHttpClient.newBuilder()
-        .addInterceptor(ChuckerInterceptor(app))
+    private val cache = Cache(
+        directory = File(app.cacheDir, "cache"),
+        maxSize = 10L * 1024 * 1024, // 10 MiB
+    )
+    private val baseOkHttpClient = OkHttpClient.Builder().build()
+    private val cacheOkHttpClient = baseOkHttpClient.newBuilder()
+        .setupCache(
+            cache = cache,
+            onlyCache = true,
+            maxStale = OkHttpCacheInterceptor.DEFAULT_MAX_STALE
+        )
         .build()
-    private val gson = GsonBuilder().setLenient().create()
+    private val apiOkHttpClient = baseOkHttpClient.newBuilder()
+        .setupCache(
+            cache = cache,
+            onlyCache = false,
+            maxStale = OkHttpCacheInterceptor.DEFAULT_MAX_STALE
+        )
+        .build()
 
+    private val gson = GsonBuilder().setLenient().create()
     val logger = SampleAndroidLogger()
 
     val repository: SampleCacheRepository = SampleCacheRepositoryImpl(
-        manuallyWrappedRetrofit = getManuallyWrappedRetrofit(),
-        generatedRetrofitWrapper = getGeneratedRetrofitWrapper(),
-        ktorApiDataSource = getKtorApiDataSource()
+        manuallyWrappedRetrofit = createManuallyWrappedRetrofit(),
+        generatedRetrofitWrapper = createGeneratedRetrofitWrapper(),
+        ktorApiDataSource = createKtorApiDataSource()
     )
 
-    private fun getKtorApiDataSource(): SampleKtorApiDataSource {
+    private fun createKtorApiDataSource(): SampleKtorApiDataSource {
         return SampleKtorApiDataSource(
             platform = SampleAndroidPlatform { isCache ->
                 if (isCache) {
@@ -55,63 +64,35 @@ class SampleCacheDependencies(app: Application) {
         )
     }
 
-    private fun getManuallyWrappedRetrofit(): SampleRetrofitServiceManuallyWrapped<SampleRetrofitService> {
+    private fun createManuallyWrappedRetrofit(): SampleRetrofitServiceManuallyWrapped<SampleRetrofitService> {
         return SampleRetrofitServiceManuallyWrapped(
             retrofitDelegate = { isCache ->
-                Retrofit.Builder()
-                    .baseUrl("https://api.curator.io/v1/")
-                    .client(
-                        if (isCache) {
-                            cacheOkHttpClient
-                        } else {
-                            apiOkHttpClient
-                        }
-                    )
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                    .build()
-                    .create(SampleRetrofitService::class.java)
+                createRetrofitClient(
+                    if (isCache) {
+                        cacheOkHttpClient
+                    } else {
+                        apiOkHttpClient
+                    }
+                )
             }
         )
     }
 
     @Suppress("UNREACHABLE_CODE")
-    private fun getGeneratedRetrofitWrapper(): SampleRetrofitServiceWrapper {
-        // just provide Retrofit.Builder with OkHttpClient and get the Wrapper
-        val retrofitBuilder = Retrofit.Builder()
-            .baseUrl("https://api.curator.io/v1/")
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+    private fun createGeneratedRetrofitWrapper(): SampleRetrofitServiceWrapper {
+        return SampleRetrofitServiceWrapper(
+            createRetrofitClient(cacheOkHttpClient),
+            createRetrofitClient(apiOkHttpClient)
+        )
+    }
 
-        return SampleRetrofitServiceWrapper.create(retrofitBuilder, apiOkHttpClient)
-
-        // or create the Wrapper yourself if you need different interceptors for cache and api and etc
-        val cacheService = Retrofit.Builder()
+    private fun createRetrofitClient(okHttpClient: OkHttpClient): SampleRetrofitService {
+        return Retrofit.Builder()
             .baseUrl("https://api.curator.io/v1/")
-            .client(
-                OkHttpClientUtils.setupCache(
-                    okHttpClient = cacheOkHttpClient,
-                    onlyCache = true
-                )
-            )
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .build()
             .create(SampleRetrofitService::class.java)
-
-        val apiService = Retrofit.Builder()
-            .baseUrl("https://api.curator.io/v1/")
-            .client(
-                OkHttpClientUtils.setupCache(
-                    okHttpClient = apiOkHttpClient,
-                    onlyCache = false
-                )
-            )
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-            .build()
-            .create(SampleRetrofitService::class.java)
-
-        return SampleRetrofitServiceWrapper(cacheService, apiService)
     }
 }

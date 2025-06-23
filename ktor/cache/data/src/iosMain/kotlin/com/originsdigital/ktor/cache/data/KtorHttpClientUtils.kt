@@ -44,8 +44,8 @@ class KtorHttpClientUtils {
                 onlyCache = false
             )
             return KtorWrapper(
-                cache = engineDelegate(cacheEngine, true),
-                api = engineDelegate(apiEngine, false)
+                cacheClient = engineDelegate(cacheEngine, true),
+                apiClient = engineDelegate(apiEngine, false)
             )
         }
 
