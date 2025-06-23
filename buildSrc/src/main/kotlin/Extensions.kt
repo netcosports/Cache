@@ -1,7 +1,7 @@
 import org.gradle.api.Project
 
 val Project.gpgSigningKey: String get() = getPropertyByName("gpgSigningKey")
-val Project.gpgSigningKeyId: String get() = getPropertyByName("gpgSigningKeyIddd")
+val Project.gpgSigningKeyId: String get() = getPropertyByName("gpgSigningKeyId")
 val Project.gpgSigningPassphrase: String get() = getPropertyByName("gpgSigningPassphrase")
 val Project.sonatypeUsername: String get() = getPropertyByName("sonatypeUsername")
 val Project.sonatypePassword: String get() = getPropertyByName("sonatypePassword")

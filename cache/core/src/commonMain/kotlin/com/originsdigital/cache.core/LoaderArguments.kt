@@ -6,8 +6,8 @@ sealed class LoaderArguments {
 
     companion object {
         /*You don't need to create the LoaderArguments yourself. You can only get it via
-        * or suspendLoader (cache-core-ktx)
-        * or singleLoader (cache-core-rx)
+        * or suspendLoader (cache-ktx)
+        * or singleLoader (cache-rx)
         * or from your own
         */
         internal fun getLoaderArgument(isCache: Boolean): LoaderArguments {

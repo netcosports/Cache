@@ -1,6 +1,6 @@
 package com.originsdigital.cachesample.data
 
-import com.originsdigital.retrofit.cache.data.CacheService
+import com.originsdigital.cache.retrofit.data.CacheService
 import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.http.GET

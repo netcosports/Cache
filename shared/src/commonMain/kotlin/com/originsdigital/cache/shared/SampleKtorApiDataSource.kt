@@ -1,8 +1,8 @@
 package com.originsdigital.cache.shared
 
-import com.originsdigital.cache.core.CoroutineLoader
 import com.originsdigital.cache.core.MergeArguments
-import com.originsdigital.cache.core.toFlow
+import com.originsdigital.cache.ktx.CoroutineLoader
+import com.originsdigital.cache.ktx.toFlow
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel

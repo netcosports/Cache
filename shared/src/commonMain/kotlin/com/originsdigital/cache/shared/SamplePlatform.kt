@@ -1,6 +1,6 @@
 package com.originsdigital.cache.shared
 
-import com.originsdigital.ktor.cache.data.KtorHttpClientWrapper
+import com.originsdigital.cache.ktor.data.KtorHttpClientWrapper
 import io.ktor.client.HttpClientConfig
 
 interface SamplePlatform {

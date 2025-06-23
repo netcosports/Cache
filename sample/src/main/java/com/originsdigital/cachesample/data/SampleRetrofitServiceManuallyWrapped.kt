@@ -1,10 +1,10 @@
 package com.originsdigital.cachesample.data
 
-import com.originsdigital.cache.core.CoroutineLoader
 import com.originsdigital.cache.core.LoaderArguments
-import com.originsdigital.cache.core.SingleLoader
-import com.originsdigital.cache.core.singleLoader
-import com.originsdigital.cache.core.suspendLoader
+import com.originsdigital.cache.ktx.CoroutineLoader
+import com.originsdigital.cache.ktx.suspendLoader
+import com.originsdigital.cache.rx.SingleLoader
+import com.originsdigital.cache.rx.singleLoader
 import io.reactivex.Single
 
 class SampleRetrofitServiceManuallyWrapped<SERVICE>(

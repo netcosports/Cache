@@ -32,7 +32,7 @@ kotlin {
 
                 implementation(project(Config.Deps.LibsModules.cacheCore))
 
-                implementation(project(Config.Deps.LibsModules.cacheCoreKtx))
+                implementation(project(Config.Deps.LibsModules.cacheKtx))
                 implementation(Config.Deps.Coroutines.core)
 
                 implementation(project(Config.Deps.LibsModules.cacheKtorData))

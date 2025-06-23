@@ -5,13 +5,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.originsdigital.cache.core.MergeArguments
 import com.originsdigital.cache.core.ResponseWrapper
-import com.originsdigital.cache.core.api
-import com.originsdigital.cache.core.cache
 import com.originsdigital.cache.core.map
-import com.originsdigital.cache.core.singleLoader
-import com.originsdigital.cache.core.suspendLoader
-import com.originsdigital.cache.core.toFlow
-import com.originsdigital.cache.core.toObservable
+import com.originsdigital.cache.ktx.api
+import com.originsdigital.cache.ktx.suspendLoader
+import com.originsdigital.cache.ktx.toFlow
+import com.originsdigital.cache.rx.api
+import com.originsdigital.cache.rx.singleLoader
+import com.originsdigital.cache.rx.toObservable
 import com.originsdigital.cachesample.di.SampleCacheDependencies
 import com.originsdigital.cachesample.domain.entity.Scene
 import com.originsdigital.cachesample.domain.utils.isEmpty
@@ -180,8 +180,7 @@ class SampleCacheViewModel(app: Application) : AndroidViewModel(app) {
                         // example if you need to combine loaders chain with an API request
                         flow {
                             val requestD = repository.getKtorLoader(url = GISTS) // request D
-//                            .api()
-                                .cache()
+                                .api()
                             log("loadRetrofitSuspendToLoader suspendLoader zip requestD=$requestD")
                             emit(requestD)
                         }

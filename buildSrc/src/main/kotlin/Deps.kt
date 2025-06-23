@@ -26,8 +26,8 @@ object Config {
         const val cacheVersion = Build.versionName //"1.0.0"
 
         const val cacheCore = "cache-core"
-        const val cacheCoreKtx = "cache-core-ktx"
-        const val cacheCoreRx = "cache-core-rx"
+        const val cacheKtx = "cache-ktx"
+        const val cacheRx = "cache-rx"
 
         const val cacheOkHttpData = "cache-okhttp-data"
 
@@ -99,15 +99,15 @@ object Config {
 
         object LibsModules {
             const val cacheCore = ":cache:core"
-            const val cacheCoreKtx = ":cache:core-ktx"
-            const val cacheCoreRx = ":cache:core-rx"
+            const val cacheKtx = ":cache:ktx"
+            const val cacheRx = ":cache:rx"
 
-            const val cacheOkHttpData = ":okhttp:cache:data"
+            const val cacheOkHttpData = ":cache:okhttp:data"
 
-            const val cacheRetrofitData = ":retrofit:cache:data"
-            const val cacheRetrofitProcessor = ":retrofit:cache:processor"
+            const val cacheRetrofitData = ":cache:retrofit:data"
+            const val cacheRetrofitProcessor = ":cache:retrofit:processor"
 
-            const val cacheKtorData = ":ktor:cache:data"
+            const val cacheKtorData = ":cache:ktor:data"
 
             const val shared = ":shared"
         }
@@ -116,8 +116,8 @@ object Config {
             const val cacheVersion = Build.versionName
 
             const val cacheCore = "${Publishing.cacheGroupId}:cache-core:$cacheVersion"
-            const val cacheCoreKtx = "${Publishing.cacheGroupId}:cache-core-ktx:$cacheVersion"
-            const val cacheCoreRx = "${Publishing.cacheGroupId}:cache-core-rx:$cacheVersion"
+            const val cacheKtx = "${Publishing.cacheGroupId}:cache-ktx:$cacheVersion"
+            const val cacheRx = "${Publishing.cacheGroupId}:cache-rx:$cacheVersion"
 
             const val cacheOkHttData = "${Publishing.cacheGroupId}:cache-okhttp-data:$cacheVersion"
 

@@ -1,7 +1,7 @@
 package com.originsdigital.cachesample.data
 
-import com.originsdigital.cache.core.CoroutineLoader
-import com.originsdigital.cache.core.SingleLoader
+import com.originsdigital.cache.ktx.CoroutineLoader
+import com.originsdigital.cache.rx.SingleLoader
 import com.originsdigital.cache.shared.SampleKtorApiDataSource
 import com.originsdigital.cachesample.domain.SampleCacheRepository
 import io.reactivex.Observable

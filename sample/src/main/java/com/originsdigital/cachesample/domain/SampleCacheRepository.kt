@@ -1,7 +1,7 @@
 package com.originsdigital.cachesample.domain
 
-import com.originsdigital.cache.core.CoroutineLoader
-import com.originsdigital.cache.core.SingleLoader
+import com.originsdigital.cache.ktx.CoroutineLoader
+import com.originsdigital.cache.rx.SingleLoader
 import io.reactivex.Observable
 
 interface SampleCacheRepository {

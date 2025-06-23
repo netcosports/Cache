@@ -68,8 +68,8 @@ dependencies {
     implementation(project(Config.Deps.LibsModules.shared))
 
     implementation(project(Config.Deps.LibsModules.cacheCore))
-    implementation(project(Config.Deps.LibsModules.cacheCoreKtx))
-    implementation(project(Config.Deps.LibsModules.cacheCoreRx))
+    implementation(project(Config.Deps.LibsModules.cacheKtx))
+    implementation(project(Config.Deps.LibsModules.cacheRx))
 
     implementation(Config.Deps.RX.rxJava)
     implementation(Config.Deps.RX.rxAndroid)

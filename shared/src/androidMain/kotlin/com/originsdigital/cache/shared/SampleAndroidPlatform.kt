@@ -1,7 +1,7 @@
 package com.originsdigital.cache.shared
 
-import com.originsdigital.ktor.cache.data.KtorHttpClientUtils
-import com.originsdigital.ktor.cache.data.KtorHttpClientWrapper
+import com.originsdigital.cache.ktor.data.KtorHttpClientUtils
+import com.originsdigital.cache.ktor.data.KtorHttpClientWrapper
 import io.ktor.client.HttpClientConfig
 import okhttp3.OkHttpClient
 

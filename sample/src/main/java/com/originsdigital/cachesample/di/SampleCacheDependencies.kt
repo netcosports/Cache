@@ -10,8 +10,8 @@ import com.originsdigital.cachesample.data.SampleRetrofitService
 import com.originsdigital.cachesample.data.SampleRetrofitServiceManuallyWrapped
 import com.originsdigital.cachesample.data.SampleRetrofitServiceWrapper
 import com.originsdigital.cachesample.domain.SampleCacheRepository
-import com.originsdigital.okhttp.cache.data.OkHttpCacheInterceptor
-import com.originsdigital.okhttp.cache.data.setupCache
+import com.originsdigital.cache.okhttp.data.OkHttpCacheInterceptor
+import com.originsdigital.cache.okhttp.data.setupCache
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Cache
 import okhttp3.OkHttpClient
