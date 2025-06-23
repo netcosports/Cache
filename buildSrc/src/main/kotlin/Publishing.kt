@@ -50,7 +50,7 @@ fun Project.initPublishing(
             // use this instead of MavenLocal to generate md5/sha1/sha256/sha512 for MavenCentral
 //            maven {
 //                this.name = "test"
-//                this.url = uri(File("/Users/woffka/.m2/test/"))
+//                this.url = uri(java.io.File("${rootProject.projectDir.absolutePath}/build/testPublish/"))
 //            }
             maven {
                 this.name = "OSSRH"
