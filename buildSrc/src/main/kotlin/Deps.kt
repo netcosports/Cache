@@ -16,7 +16,7 @@ object Config {
         const val packageNameDev = "com.originsdigital.components.sample.dev"
         const val packageNameProd = "com.originsdigital.components.sample"
 
-        const val versionName = "3.0.0"
+        const val versionName = "3.0.1"
         const val versionOffset = 0
     }
 
