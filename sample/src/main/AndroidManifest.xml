@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.netcosports.cachesample.ui.SampleCacheActivity"
+            android:name="com.originsdigital.cachesample.ui.SampleCacheActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

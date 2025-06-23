@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.netcosports.cachesample"
+    namespace = "com.originsdigital.cachesample"
 
     compileSdk = Config.Build.compileSdk
 

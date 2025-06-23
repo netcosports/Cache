@@ -3,6 +3,7 @@ import org.gradle.api.JavaVersion
 object Config {
 
     object Build {
+        const val gradleVersion = "8.10.0"
         const val kotlinVersion = "2.1.21"
 
         const val compileSdk = 35
@@ -12,8 +13,8 @@ object Config {
 
         val javaVersion = JavaVersion.VERSION_11
 
-        const val packageNameDev = "com.netcosports.components.sample"
-        const val packageNameProd = "com.netcosports.components.sample"
+        const val packageNameDev = "com.originsdigital.components.sample"
+        const val packageNameProd = "com.originsdigital.components.sample"
 
         const val versionName = "3.0.0"
         const val versionOffset = 0
@@ -120,18 +121,16 @@ object Config {
         object LibsRemote {
             const val cacheVersion = Build.versionName
 
-            const val cacheCore = "com.netcosports.kmm.cache:cache-core:$cacheVersion"
-            const val cacheCoreKtx = "com.netcosports.kmm.cache:cache-core-ktx:$cacheVersion"
-            const val cacheCoreRx = "com.netcosports.kmm.cache:cache-core-rx:$cacheVersion"
+            const val cacheCore = "${Publishing.cacheGroupId}:cache-core:$cacheVersion"
+            const val cacheCoreKtx = "${Publishing.cacheGroupId}:cache-core-ktx:$cacheVersion"
+            const val cacheCoreRx = "${Publishing.cacheGroupId}:cache-core-rx:$cacheVersion"
 
-            const val okhttpCacheData = "com.netcosports.kmm.cache:okhttp-cache-data:$cacheVersion"
+            const val cacheOkhttData = "${Publishing.cacheGroupId}:cache-okhttp-data:$cacheVersion"
 
-            const val retrofitCacheData =
-                "com.netcosports.kmm.cache:retrofit-cache-data:$cacheVersion"
-            const val retrofitCacheProcessor =
-                "com.netcosports.kmm.cache:retrofit-cache-processor:$cacheVersion"
+            const val cacheRetrofitData = "${Publishing.cacheGroupId}:cache-retrofit-data:$cacheVersion"
+            const val cacheRetrofitProcessor = "${Publishing.cacheGroupId}:cache-retrofit-processor:$cacheVersion"
 
-            const val ktorCacheData = "com.netcosports.kmm.cache:ktor-cache-data:$cacheVersion"
+            const val cacheKtorData = "${Publishing.cacheGroupId}:cache-ktor-data:$cacheVersion"
         }
     }
 }

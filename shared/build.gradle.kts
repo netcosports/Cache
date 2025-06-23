@@ -65,6 +65,8 @@ kotlin {
 }
 
 android {
+    namespace = "com.originsdigital.cache.shared"
+
     compileSdk = Config.Build.compileSdk
 
     defaultConfig {
@@ -72,5 +74,4 @@ android {
     }
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    namespace = "com.netcosports.cache.shared"
 }

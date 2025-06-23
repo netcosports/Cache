@@ -55,7 +55,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.netcosports.ktor.cache.data"
+    namespace = "com.originsdigital.ktor.cache.data"
 }
 
 val emptyJavadocJar by tasks.registering(Jar::class) {
