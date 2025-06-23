@@ -3,7 +3,7 @@ package com.originsdigital.ktor.cache.data
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.engine.darwin.DarwinLegacy
+import io.ktor.client.engine.darwin.Darwin
 import platform.Foundation.NSURLRequestCachePolicy
 import platform.Foundation.NSURLRequestReturnCacheDataDontLoad
 import platform.Foundation.NSURLRequestUseProtocolCachePolicy
@@ -54,7 +54,7 @@ class KtorHttpClientUtils {
             diskCapacity: Long,
             onlyCache: Boolean
         ): HttpClientEngine {
-            return DarwinLegacy.create {
+            return Darwin.create {
                 val cachePolicy: NSURLRequestCachePolicy = if (onlyCache) {
                     NSURLRequestReturnCacheDataDontLoad
                 } else {

@@ -55,7 +55,7 @@ android {
 }
 
 dependencies {
-    implementation(Config.Deps.Kotlin.kotlinJdk8)
+    implementation(Config.Deps.Kotlin.kotlin)
     implementation(Config.Deps.Coroutines.android)
 
     implementation(Config.Deps.AndroidX.appcompat)

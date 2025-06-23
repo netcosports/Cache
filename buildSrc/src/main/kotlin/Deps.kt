@@ -13,7 +13,7 @@ object Config {
 
         val javaVersion = JavaVersion.VERSION_11
 
-        const val packageNameDev = "com.originsdigital.components.sample"
+        const val packageNameDev = "com.originsdigital.components.sample.dev"
         const val packageNameProd = "com.originsdigital.components.sample"
 
         const val versionName = "3.0.0"
@@ -21,11 +21,6 @@ object Config {
     }
 
     object Publishing {
-
-        fun jvm() = arrayOf("jvm")
-        fun android() = arrayOf("androidDebug", "androidRelease")
-        fun ios() = arrayOf("iosArm64", "iosX64", "iosSimulatorArm64")
-        fun kmm() = arrayOf("kotlinMultiplatform", "metadata")
 
         const val cacheGroupId = "io.github.netcosports.kmm.cache"
         const val cacheVersion = Build.versionName //"1.0.0"
@@ -71,7 +66,7 @@ object Config {
             const val json = "io.ktor:ktor-client-json:$version"
             const val logging = "io.ktor:ktor-client-logging:$version"
             const val android = "io.ktor:ktor-client-okhttp:$version"
-            const val ios = "io.ktor:ktor-client-darwin-legacy:$version"
+            const val ios = "io.ktor:ktor-client-darwin:$version"
             const val serialization = "io.ktor:ktor-serialization-kotlinx-json:$version"
             const val negotiation = "io.ktor:ktor-client-content-negotiation:${version}"
         }
@@ -95,7 +90,6 @@ object Config {
 
         object Kotlin {
             const val kotlin = "org.jetbrains.kotlin:kotlin-stdlib:${Build.kotlinVersion}"
-            const val kotlinJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Build.kotlinVersion}"
             const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:${Build.kotlinVersion}"
 
             const val kotlinPoet = "com.squareup:kotlinpoet:2.2.0"
